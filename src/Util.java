@@ -94,4 +94,11 @@ public class Util {
             throw new IllegalArgumentException();
         }
     }
+
+    public static String getNameFromCoordinates(int row, int column){
+        char rowChar = 'A';
+        rowChar += row;
+        column++;
+        return rowChar + "" + column;
+    }
 }

@@ -9,33 +9,40 @@ public class Graph {
         isWholeGraphEvaluatedForCyclic = false;
     }
 
-    public Graph addNode(String nodeName){
-        Node tempNode = new Node(nodeName);
-        if (!nodeMap.containsKey(nodeName)) {
-            nodeMap.put(nodeName, tempNode);
+    public Graph addNode(Node node){
+        if (!nodeMap.containsKey(node.getName())) {
+            nodeMap.put(node.getName(), node);
+        }
+        else {
+            Node existingNode = nodeMap.get(node.getName());
+            if (!existingNode.hasCell() && node.hasCell()) {
+                nodeMap.put(node.getName(), node);
+            }
         }
         isWholeGraphEvaluatedForCyclic = false;
         return this;
     }
 
-    public Graph addEdge(String from, String to) {
-        Node fromNode;
-        if (!nodeMap.containsKey(from)) {
-            fromNode = new Node(from);
-            nodeMap.put(from, fromNode);
+    public Graph addEdge(Node fromN, Node toN) {
+        if (!nodeMap.containsKey(fromN.getName())) {
+            nodeMap.put(fromN.getName(), fromN);
         }
         else {
-            fromNode = nodeMap.get(from);
+            Node existingFromNode = nodeMap.get(fromN.getName());
+            if (!existingFromNode.hasCell() && fromN.hasCell()) {
+                nodeMap.put(fromN.getName(), fromN);
+            }
+            else{
+                fromN = existingFromNode;
+            }
         }
-        Node toNode;
-        if (!nodeMap.containsKey(to)) {
-            toNode = new Node(to);
-            nodeMap.put(to, toNode);
+        if (!nodeMap.containsKey(toN.getName())) {
+            nodeMap.put(toN.getName(), toN);
         }
         else {
-            toNode = nodeMap.get(to);
+            toN = nodeMap.get(toN.getName());
         }
-        fromNode.addNextNode(toNode);
+        fromN.addNextNode(toN);
         isWholeGraphEvaluatedForCyclic = false;
         return this;
     }
@@ -116,12 +123,12 @@ public class Graph {
                     Node tempNode = dfsStack.pop();
                     if (null == tempNode) {
                         Node readyToEvaluateNode = currentPathStack.pop();
-                        //readyToEvaluateNode.evaluate();
+                        readyToEvaluateNode.evaluate(values);
                         readyToEvaluateNode.setEvaluated();
                     }
 
                     if (!tempNode.isPointingToSomething()) {
-                        // tempNode.evaluate()
+                        tempNode.evaluate(values);
                         tempNode.setEvaluated();
                     }
                     else {
@@ -132,7 +139,7 @@ public class Graph {
                             }
                         }
                         if (0 == nextUnevaluatedNodes.size()) {
-                            //tempNode.evaluate()
+                            tempNode.evaluate(values);
                             tempNode.setEvaluated();
                         }
                         else {
@@ -147,6 +154,14 @@ public class Graph {
             }
         }
         return 0;
+    }
+
+    public boolean isNodeCyclic(int row, int column) {
+        return isNodeCyclic(Util.getNameFromCoordinates(row, column));
+    }
+
+    public boolean isNodeCyclic(String name) {
+        return nodeMap.get(name).isCyclic();
     }
 }
 

@@ -5,21 +5,29 @@ import java.io.InputStreamReader;
 public class Spreadsheet {
     public static void main (String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String oneLine = null;
-        oneLine = reader.readLine();
+        String oneLine = reader.readLine();
         String[] colRow = oneLine.split("\\s");
         int col = Integer.valueOf(colRow[0]);
         int row = Integer.valueOf(colRow[1]);
-        Cell[][] cells = new Cell[row][col];
+        double[][] values = new double[row][col];
+        GraphManager graphManager = new GraphManager(values);
 
         int colCounter = 0;
         int rowCounter = 0;
         while ((oneLine = reader.readLine()) != null) {
-            Cell oneCell = new Cell(oneLine);
-            cells[rowCounter][colCounter++] = oneCell;
+            graphManager.addNodeWithRawText(rowCounter, colCounter, oneLine);
             if (colCounter > col) {
                 colCounter = 0;
                 rowCounter++;
+            }
+        }
+
+        String[][] result = graphManager.getValueMatrix();
+
+        System.out.println(col + " " + row);
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
+                System.out.println(result[i][j]);
             }
         }
     }

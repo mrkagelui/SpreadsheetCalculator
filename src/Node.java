@@ -6,6 +6,15 @@ class Node {
     private List<Node> nextNodes;
     private boolean isVisited;
     private boolean isCyclic;
+    private Cell cell;
+
+    public void setCell(Cell c) {
+        cell = c;
+    }
+
+    public boolean hasCell(){
+        return cell != null;
+    }
 
     public boolean isEvaluated() {
         return isEvaluated;
@@ -63,6 +72,10 @@ class Node {
     public void addNextNode(Node node) {
         if (null == nextNodes) nextNodes = new ArrayList<>();
         nextNodes.add(node);
+    }
+
+    public boolean evaluate(double[][] matrix){
+        return cell.evaluate(matrix);
     }
 
     @Override

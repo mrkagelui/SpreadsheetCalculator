@@ -45,7 +45,7 @@ public class GraphTest {
         String[] allEdges = this.graphText.split(",\\s");
         for (String oneEdge : allEdges) {
             String[] fromTo = oneEdge.split("->");
-            graph.addEdge(fromTo[0], fromTo[1]);
+            graph.addEdge(new Node(fromTo[0]), new Node(fromTo[1]));
         }
         Node[] cyclicNodes = graph.getCyclicNodes();
         cyclicNodeNames = new String[cyclicNodes.length];

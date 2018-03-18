@@ -32,9 +32,6 @@ public class Cell {
                     valueDetermined = false;
                 }
             }
-            else {
-                // TODO: handle other cell reference here
-            }
         }
         return valueDetermined;
     }
@@ -73,5 +70,9 @@ public class Cell {
             }
             requiredLocations = resultList.toArray(new String[0]);
         }
+    }
+
+    public String[] getRequiredLocations(){
+        return requiredLocations;
     }
 }
