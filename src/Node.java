@@ -7,6 +7,16 @@ class Node {
     private boolean isVisited;
     private boolean isCyclic;
 
+    public boolean isEvaluated() {
+        return isEvaluated;
+    }
+
+    public void setEvaluated() {
+        isEvaluated = true;
+    }
+
+    private boolean isEvaluated;
+
     public Node(String newName) {
         name = newName;
         isVisited = false;

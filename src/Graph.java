@@ -103,7 +103,49 @@ public class Graph {
             getCyclicNodes();
         }
         Node[] allNodes = getAllNodes();
+        Stack<Node> dfsStack = new Stack<>();
+        Stack<Node> currentPathStack = new Stack<>();
 
+        for (Node currentRoot : allNodes) {
+            if (!currentRoot.isCyclic() && !currentRoot.isEvaluated()) {
+                dfsStack.clear();
+                currentPathStack.clear();
+                dfsStack.push(currentRoot);
+
+                while (!dfsStack.empty()){
+                    Node tempNode = dfsStack.pop();
+                    if (null == tempNode) {
+                        Node readyToEvaluateNode = currentPathStack.pop();
+                        //readyToEvaluateNode.evaluate();
+                        readyToEvaluateNode.setEvaluated();
+                    }
+
+                    if (!tempNode.isPointingToSomething()) {
+                        // tempNode.evaluate()
+                        tempNode.setEvaluated();
+                    }
+                    else {
+                        List<Node> nextUnevaluatedNodes = tempNode.getNextNodes();
+                        for (Node oneChild : nextUnevaluatedNodes) {
+                            if (oneChild.isEvaluated()) {
+                                nextUnevaluatedNodes.remove(oneChild);
+                            }
+                        }
+                        if (0 == nextUnevaluatedNodes.size()) {
+                            //tempNode.evaluate()
+                            tempNode.setEvaluated();
+                        }
+                        else {
+                            currentPathStack.push(tempNode);
+                            dfsStack.push(null);
+                            for (Node oneNode : nextUnevaluatedNodes) {
+                                dfsStack.push(oneNode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return 0;
     }
 }
