@@ -8,14 +8,8 @@ public class GraphManager {
     }
 
     public void addNodeWithRawText(int row, int column, String rawText) {
-        Cell c = new Cell(rawText);
-        Node node = new Node(Util.getNameFromCoordinates(row, column));
-        node.setCell(c);
+        Node node = new Node(Util.getNameFromCoordinates(row, column), rawText);
         graph.addNode(node);
-        String[] requiredCellNames = c.getRequiredLocations();
-        for (String oneCellName : requiredCellNames) {
-            graph.addEdge(node, new Node(oneCellName));
-        }
     }
 
     public String[][] getValueMatrix(){

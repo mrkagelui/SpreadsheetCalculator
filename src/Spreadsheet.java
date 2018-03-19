@@ -1,9 +1,9 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Spreadsheet {
     public static void main (String[] args) throws IOException {
+//        FileInputStream is = new FileInputStream(new File("1.txt"));
+//        System.setIn(is);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String oneLine = reader.readLine();
         String[] colRow = oneLine.split("\\s");
@@ -15,8 +15,8 @@ public class Spreadsheet {
         int colCounter = 0;
         int rowCounter = 0;
         while ((oneLine = reader.readLine()) != null) {
-            graphManager.addNodeWithRawText(rowCounter, colCounter, oneLine);
-            if (colCounter > col) {
+            graphManager.addNodeWithRawText(rowCounter, colCounter++, oneLine);
+            if (colCounter >= col) {
                 colCounter = 0;
                 rowCounter++;
             }

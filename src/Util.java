@@ -101,4 +101,12 @@ public class Util {
         column++;
         return rowChar + "" + column;
     }
+
+    public static int getRowFromName(String name) {
+        return Character.toUpperCase(name.charAt(0)) - 'A';
+    }
+
+    public static int getColumnFromName(String name) {
+        return Integer.valueOf(name.substring(1)) - 1;
+    }
 }

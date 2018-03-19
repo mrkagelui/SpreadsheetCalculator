@@ -16,11 +16,11 @@ public class GraphTest {
     private static final Map<Integer, String> inputMap = createMap();
     private static Map<Integer, String> createMap() {
         Map<Integer, String> aMap = new HashMap<>();
-        aMap.put(0, "A10->A11, A11->A12, A12->B134");
+        aMap.put(0, "A10->A11, A11->A12, A12->B134, B134");
         aMap.put(1, "A10->A11, A11->A12, A12->A10");
-        aMap.put(2,
-                "A1->A2, A1->A3, A1->A4, A2->A5, A2->A6, A2->A7, A3->A8, A3->A9, " +
-                        "A4->A10, A4->A11, A4->A12, A6->A2, A6->A3, A8->A1, A3->A11");
+        aMap.put(2, "A1->A2 A3 A4, A2->A5 A6 A7, A3->A8 A9 A11, " +
+                        "A4->A10 A11 A12, A6->A2 A3, A8->A1, " +
+                        "A5, A7, A9, A10, A11, A12");
         return aMap;
     }
 
@@ -45,7 +45,14 @@ public class GraphTest {
         String[] allEdges = this.graphText.split(",\\s");
         for (String oneEdge : allEdges) {
             String[] fromTo = oneEdge.split("->");
-            graph.addEdge(new Node(fromTo[0]), new Node(fromTo[1]));
+            Node node;
+            if (fromTo.length == 1) {
+                node = new Node(fromTo[0]);
+            }
+            else {
+                node = new Node(fromTo[0], fromTo[1]);
+            }
+            graph.addNode(node);
         }
         Node[] cyclicNodes = graph.getCyclicNodes();
         cyclicNodeNames = new String[cyclicNodes.length];

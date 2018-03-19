@@ -13,17 +13,12 @@ public class Graph {
         if (!nodeMap.containsKey(node.getName())) {
             nodeMap.put(node.getName(), node);
         }
-        else {
-            Node existingNode = nodeMap.get(node.getName());
-            if (!existingNode.hasCell() && node.hasCell()) {
-                nodeMap.put(node.getName(), node);
-            }
-        }
         isWholeGraphEvaluatedForCyclic = false;
         return this;
     }
 
-    public Graph addEdge(Node fromN, Node toN) {
+    /*
+    public Graph addEdge(Node fromN, String toNodeName) {
         if (!nodeMap.containsKey(fromN.getName())) {
             nodeMap.put(fromN.getName(), fromN);
         }
@@ -36,16 +31,11 @@ public class Graph {
                 fromN = existingFromNode;
             }
         }
-        if (!nodeMap.containsKey(toN.getName())) {
-            nodeMap.put(toN.getName(), toN);
-        }
-        else {
-            toN = nodeMap.get(toN.getName());
-        }
-        fromN.addNextNode(toN);
+        fromN.addNextNodeName(toNodeName);
         isWholeGraphEvaluatedForCyclic = false;
         return this;
     }
+    */
 
     public Node[] getAllNodes(){
         List<Node> allNodes = new ArrayList<>();
@@ -91,8 +81,9 @@ public class Graph {
                         if (tempNode.isPointingToSomething() && !tempNode.isVisited()) {
                             currentPathStack.push(tempNode);
                             dfsStack.push(null);
-                            List<Node> nextNodes = tempNode.getNextNodes();
-                            for (Node oneChild : nextNodes) {
+                            List<String> nextNodes = tempNode.getNextNodeNames();
+                            for (String oneChildName : nextNodes) {
+                                Node oneChild = this.nodeMap.get(oneChildName);
                                 dfsStack.push(oneChild);
                             }
                         }
@@ -126,27 +117,28 @@ public class Graph {
                         readyToEvaluateNode.evaluate(values);
                         readyToEvaluateNode.setEvaluated();
                     }
-
-                    if (!tempNode.isPointingToSomething()) {
-                        tempNode.evaluate(values);
-                        tempNode.setEvaluated();
-                    }
                     else {
-                        List<Node> nextUnevaluatedNodes = tempNode.getNextNodes();
-                        for (Node oneChild : nextUnevaluatedNodes) {
-                            if (oneChild.isEvaluated()) {
-                                nextUnevaluatedNodes.remove(oneChild);
-                            }
-                        }
-                        if (0 == nextUnevaluatedNodes.size()) {
+                        if (!tempNode.isPointingToSomething()) {
                             tempNode.evaluate(values);
                             tempNode.setEvaluated();
-                        }
-                        else {
-                            currentPathStack.push(tempNode);
-                            dfsStack.push(null);
-                            for (Node oneNode : nextUnevaluatedNodes) {
-                                dfsStack.push(oneNode);
+                        } else {
+                            List<String> nextUnevaluatedNodeNames = tempNode.getNextNodeNames();
+                            List<Node> nextUnevaluatedNodes = new LinkedList<>();
+                            for (String oneChildName : nextUnevaluatedNodeNames) {
+                                Node oneChild = this.nodeMap.get(oneChildName);
+                                if (!oneChild.isEvaluated()) {
+                                    nextUnevaluatedNodes.add(oneChild);
+                                }
+                            }
+                            if (0 == nextUnevaluatedNodes.size()) {
+                                tempNode.evaluate(values);
+                                tempNode.setEvaluated();
+                            } else {
+                                currentPathStack.push(tempNode);
+                                dfsStack.push(null);
+                                for (Node oneNode : nextUnevaluatedNodes) {
+                                    dfsStack.push(oneNode);
+                                }
                             }
                         }
                     }

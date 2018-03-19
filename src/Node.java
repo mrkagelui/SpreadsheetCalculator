@@ -1,20 +1,16 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class Node {
     private String name;
-    private List<Node> nextNodes;
+    private List<String> nextNodeNames;
     private boolean isVisited;
     private boolean isCyclic;
-    private Cell cell;
-
-    public void setCell(Cell c) {
-        cell = c;
-    }
-
-    public boolean hasCell(){
-        return cell != null;
-    }
+    private double value;
+    private String rawText;
 
     public boolean isEvaluated() {
         return isEvaluated;
@@ -30,7 +26,20 @@ class Node {
         name = newName;
         isVisited = false;
         isCyclic = false;
-        nextNodes = new ArrayList<>();
+        nextNodeNames = new ArrayList<>();
+        isEvaluated = false;
+        rawText = "";
+        parseRequiredLocations();
+    }
+
+    public Node(String newName, String text) {
+        name = newName;
+        isVisited = false;
+        isCyclic = false;
+        nextNodeNames = new ArrayList<>();
+        isEvaluated = false;
+        rawText = text;
+        parseRequiredLocations();
     }
 
     public void setVisited() {
@@ -62,20 +71,77 @@ class Node {
     }
 
     public boolean isPointingToSomething(){
-        return nextNodes != null && nextNodes.size() > 0;
+        return nextNodeNames != null && nextNodeNames.size() > 0;
     }
 
-    public List<Node> getNextNodes(){
-        return nextNodes;
+    public List<String> getNextNodeNames(){
+        return nextNodeNames;
     }
 
-    public void addNextNode(Node node) {
-        if (null == nextNodes) nextNodes = new ArrayList<>();
-        nextNodes.add(node);
+    public void addNextNodeName(String nodeName) {
+        if (null == nextNodeNames) nextNodeNames = new ArrayList<>();
+        nextNodeNames.add(nodeName);
+    }
+
+    public double getValue(){
+        return value;
+    }
+
+    public boolean evaluate(){
+        if (null != rawText) {
+            Pattern p = Pattern.compile("[a-zA-Z]");
+            Matcher m = p.matcher(rawText);
+            if (!m.matches()) {
+                String[] rpnSeq = rawText.split("\\s");
+                try {
+                    double evaluateResult = Util.evaluateRPN(rpnSeq);
+                    value = evaluateResult;
+                    isEvaluated = true;
+                } catch (ArithmeticException e) {
+                    e.printStackTrace();
+                    isEvaluated = false;
+                }
+            }
+        }
+        return isEvaluated;
     }
 
     public boolean evaluate(double[][] matrix){
-        return cell.evaluate(matrix);
+        if (null != rawText) {
+            String[] rpnSeq = rawText.split("\\s");
+            for (int i = 0; i < rpnSeq.length; i++) {
+                if (rpnSeq[i].matches("[a-zA-Z]\\d+")) {
+                    double value = Util.getValueFromLocation(matrix, rpnSeq[i]);
+                    rpnSeq[i] = Double.toString(value);
+                }
+            }
+            try {
+                double evaluateResult = Util.evaluateRPN(rpnSeq);
+                value = evaluateResult;
+                int row = Util.getRowFromName(this.name);
+                int column = Util.getColumnFromName(this.name);
+                matrix[row][column] = value;
+                isEvaluated = true;
+            } catch (ArithmeticException e) {
+                e.printStackTrace();
+                isEvaluated = false;
+            }
+        }
+        return isEvaluated;
+    }
+
+    public void parseRequiredLocations() {
+        if (null == nextNodeNames) {
+            nextNodeNames = new LinkedList<>();
+        }
+        if (null != rawText) {
+            String[] rpnSeq = rawText.split("\\s");
+            for (String oneFactor : rpnSeq) {
+                if (oneFactor.matches("[a-zA-Z]\\d+")) {
+                    nextNodeNames.add(oneFactor);
+                }
+            }
+        }
     }
 
     @Override
