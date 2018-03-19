@@ -19,8 +19,8 @@ public class SpreadsheetTest {
     private static Map<Integer, String> createMap() {
         Map<Integer, String> aMap = new HashMap<>();
         aMap.put(0, "0.txt");
-//        aMap.put(1, "2.txt");
-//        aMap.put(2, "3.txt");
+        aMap.put(1, "1.txt");
+//        aMap.put(2, "2.txt");
         return aMap;
     }
 
