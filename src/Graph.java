@@ -3,6 +3,15 @@ import java.util.*;
 public class Graph {
     private Map<String, Node> nodeMap;
     private boolean isWholeGraphEvaluatedForCyclic;
+    private int numberOfCyclicNodes;
+
+    public boolean isWholeGraphEvaluatedForCyclic(){
+        return isWholeGraphEvaluatedForCyclic;
+    }
+
+    public int getNumberOfCyclicNodes(){
+        return numberOfCyclicNodes;
+    }
 
     public Graph() {
         nodeMap = new HashMap<>();
@@ -37,11 +46,9 @@ public class Graph {
     }
     */
 
-    public Node[] getAllNodes(){
+    private Node[] getAllNodes(){
         List<Node> allNodes = new ArrayList<>();
-        for (Node n : nodeMap.values()){
-            allNodes.add(n);
-        }
+        allNodes.addAll(nodeMap.values());
         return allNodes.toArray(new Node[0]);
     }
 
@@ -93,6 +100,7 @@ public class Graph {
             }
         }
         isWholeGraphEvaluatedForCyclic = true;
+        numberOfCyclicNodes = cyclicNodes.size();
         return cyclicNodes.toArray(new Node[0]);
     }
 

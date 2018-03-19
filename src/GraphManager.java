@@ -27,4 +27,11 @@ public class GraphManager {
         }
         return resultMatrix;
     }
+
+    public int getNumberOfCyclicNodes() {
+        if (!graph.isWholeGraphEvaluatedForCyclic()){
+            graph.getCyclicNodes();
+        }
+        return graph.getNumberOfCyclicNodes();
+    }
 }
